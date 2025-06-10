@@ -251,6 +251,27 @@
             color: #3b82f6;
             margin-bottom: 10px;
         }
+/*IMANGEN DEBAJO DEL TITULO*/
+        .title {
+    position: relative; /* Necesario para que los pseudo-elementos se posicionen correctamente */
+    text-align: center;
+    padding: 30px;
+    color: white;
+    font-size: 2em;
+    z-index: 1; /* Coloca el texto por encima */
+}
+
+.title::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("vhs.jpg") center/cover no-repeat;
+    opacity: 0.3; /* Ajusta la opacidad para que quede "opaca" */
+    z-index: -1; /* Para que la imagen quede detrás del texto */
+    border-radius: 15px;
+}
+        
+
 
         .alarm-overlay {
             position: fixed;
