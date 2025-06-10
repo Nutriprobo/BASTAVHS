@@ -146,7 +146,7 @@
             transition: all 0.3s ease;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            margin-top: 50px; /* Ajusta este valor a lo que necesites */
+           
         }
 
         .start-button:hover {
@@ -296,6 +296,20 @@
             0%, 100% { opacity: 0.8; }
             50% { opacity: 0.4; }
         }
+    .circle-wrapper {
+  position: relative;
+  width: min(300px, 80vw);
+  height: min(300px, 80vw);
+  margin: 20px auto;
+}
+
+.circle-wrapper .start-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0; /* quita el margin-top del botón */
+}
 
         .alarm-text {
             font-size: 2rem;
@@ -338,10 +352,14 @@
 
             <div class="center-controls">
                 <div class="timer-display" id="timerDisplay">0</div>
-                <button class="start-button" id="startButton">INICIAR</button>
+                
             </div>
+<div class="circle-wrapper">
+  <div class="letter-circle" id="letterCircle"></div>
+  <button class="start-button" id="startButton">INICIAR</button>
+</div>
 
-            <div class="letter-circle" id="letterCircle"></div>
+           
 
             <div class="controls">
                 <button class="control-btn" id="newGameBtn">NUEVO JUEGO</button>
