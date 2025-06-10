@@ -3,661 +3,552 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VHS - BASTA</title>
+    <title>VHS-BASTA</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
-        
+
         body {
-            font-family: 'Orbitron', monospace;
-            background: linear-gradient(135deg, #1a0033, #0a0a2e, #16213e);
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6b46c1 0%, #3b82f6 50%, #1e293b 100%);
             min-height: 100vh;
-            color: white;
+            display: flex;
+            flex-direction: column;
             overflow-x: hidden;
-            touch-action: manipulation;
-        }
-        
-        .neon-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(119, 198, 255, 0.3) 0%, transparent 50%);
-            z-index: -1;
-        }
-        
-        .title {
-            text-align: center;
-            margin: 15px 0;
-            font-size: 2.8rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            color: #ff77c6;
-            text-shadow: 
-                0 0 5px #ff77c6,
-                0 0 10px #ff77c6,
-                0 0 15px #ff77c6,
-                0 0 20px #ff77c6,
-                0 0 40px #ff77c6;
-            animation: neonPulse 2s ease-in-out infinite alternate;
             position: relative;
         }
-        
-        .title::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: linear-gradient(45deg, #ff77c6, #77c6ff, #c677ff);
-            border-radius: 10px;
-            z-index: -1;
-            filter: blur(15px);
-            opacity: 0.7;
-            animation: colorShift 3s ease-in-out infinite;
-        }
-        
-        @keyframes neonPulse {
-            from { text-shadow: 0 0 5px #ff77c6, 0 0 10px #ff77c6, 0 0 15px #ff77c6; }
-            to { text-shadow: 0 0 10px #ff77c6, 0 0 20px #ff77c6, 0 0 30px #ff77c6, 0 0 40px #ff77c6; }
-        }
-        
-        @keyframes colorShift {
-            0% { filter: hue-rotate(0deg) blur(15px); }
-            50% { filter: hue-rotate(180deg) blur(20px); }
-            100% { filter: hue-rotate(360deg) blur(15px); }
-        }
-        
+
         .game-container {
-            max-width: 100%;
-            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             padding: 10px;
+            max-width: 100vw;
         }
-        
+
+        .title {
+            text-align: center;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        .title h1 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            letter-spacing: 2px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .game-board {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .card-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            max-width: 90vw;
+            text-align: center;
+        }
+
+        .card-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-container:active {
+            transform: scale(0.95);
+        }
+
+        .card-title {
+            color: #3b82f6;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .card-category {
+            color: white;
+            font-size: clamp(1.1rem, 4vw, 1.5rem);
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .center-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timer-display {
+            font-size: clamp(2rem, 8vw, 3rem);
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-display.warning {
+            color: #ff6b6b;
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .start-button {
+            background: linear-gradient(45deg, #6b46c1, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .start-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .start-button:active {
+            transform: scale(0.95);
+        }
+
+        .start-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .letter-circle {
+            position: relative;
+            width: min(300px, 80vw);
+            height: min(300px, 80vw);
+            margin: 20px auto;
+        }
+
+        .letter {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(45deg, #6b46c1, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .letter:hover {
+            transform: scale(1.2);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .letter:active {
+            transform: scale(0.9);
+        }
+
+        .letter.used {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .letter.used:hover {
+            transform: none;
+        }
+
         .controls {
             display: flex;
             gap: 15px;
             justify-content: center;
-            margin-bottom: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
         }
-        
-        .btn {
-            padding: 12px 24px;
-            border: 2px solid #ff77c6;
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 25px;
-            background: linear-gradient(135deg, #1a0033, #16213e);
-            color: #ff77c6;
+            padding: 10px 20px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            font-family: 'Orbitron', monospace;
-            text-shadow: 0 0 5px currentColor;
-            box-shadow: 0 0 15px rgba(255, 119, 198, 0.3);
-            touch-action: manipulation;
+            backdrop-filter: blur(10px);
         }
-        
-        .btn:hover, .btn:active {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px currentColor;
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
-        
-        .game-info {
-            text-align: center;
-            margin-bottom: 20px;
+
+        .control-btn:active {
+            transform: scale(0.95);
         }
-        
-        .card {
-            background: linear-gradient(135deg, #1a0033, #16213e);
-            border: 3px solid #c677ff;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 10px auto;
-            box-shadow: 0 0 20px rgba(198, 119, 255, 0.3);
-            max-width: 350px;
-        }
-        
-        .card h3 {
-            color: #c677ff;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-            text-shadow: 0 0 5px currentColor;
-        }
-        
-        .card p {
-            color: #77c6ff;
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-        
-        .timer-display {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ff77c6;
-            text-shadow: 0 0 10px currentColor;
-            margin: 15px 0;
-        }
-        
-        .alphabet-circle {
-            position: relative;
-            width: 350px;
-            height: 350px;
-            margin: 20px auto;
-            background: radial-gradient(circle, rgba(255, 119, 198, 0.1), rgba(119, 198, 255, 0.1));
-            border: 3px solid #c677ff;
-            border-radius: 50%;
-            box-shadow: 
-                0 0 30px rgba(198, 119, 255, 0.5),
-                inset 0 0 30px rgba(255, 119, 198, 0.2);
-        }
-        
-        .letter {
-            position: absolute;
-            width: 45px;
-            height: 45px;
-            border: 2px solid #77c6ff;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1a0033, #0a0a2e);
-            color: #77c6ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 20px;
-            text-shadow: 0 0 5px currentColor;
-            touch-action: manipulation;
-            user-select: none;
-        }
-        
-        .letter:hover, .letter:active {
-            transform: scale(1.2);
-            box-shadow: 0 0 15px currentColor;
-            border-color: #ff77c6;
-            color: #ff77c6;
-        }
-        
-        .letter.used {
-            background: linear-gradient(135deg, #333, #666);
-            color: #666;
-            border-color: #666;
-            cursor: not-allowed;
-            box-shadow: none;
-            text-shadow: none;
-            transform: scale(0.8);
-        }
-        
-        .center-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 140px;
-            height: 140px;
-            border: 4px solid #ff77c6;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1a0033, #16213e);
-            color: #ff77c6;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(255, 119, 198, 0.5);
-            text-shadow: 0 0 5px currentColor;
-            touch-action: manipulation;
-            user-select: none;
-        }
-        
-        .center-button:hover, .center-button:active {
-            transform: translate(-50%, -50%) scale(1.1);
-            box-shadow: 0 0 30px rgba(255, 119, 198, 0.8);
-        }
-        
-        .center-button.active {
-            animation: timerPulse 1s ease-in-out infinite;
-            border-color: #ff0066;
-            color: #ff0066;
-        }
-        
-        @keyframes timerPulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.1); }
-        }
-        
+
         .rules {
-            background: linear-gradient(135deg, rgba(255, 119, 198, 0.1), rgba(198, 119, 255, 0.1));
-            border: 2px solid #ff77c6;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px auto;
-            box-shadow: 0 0 20px rgba(255, 119, 198, 0.3);
-            max-width: 350px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            backdrop-filter: blur(5px);
         }
-        
+
         .rules h3 {
-            color: #ff77c6;
-            margin-bottom: 15px;
-            text-align: center;
-            text-shadow: 0 0 5px currentColor;
+            color: #3b82f6;
+            margin-bottom: 10px;
         }
-        
-        .rules ul {
-            color: #77c6ff;
-            line-height: 1.8;
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .rules li {
-            margin-bottom: 8px;
-            padding-left: 20px;
-            position: relative;
-        }
-        
-        .rules li::before {
-            content: "▶";
-            position: absolute;
-            left: 0;
-            color: #c677ff;
-        }
-        
-        .scanlines {
+
+        .alarm-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(255, 255, 255, 0.03) 2px,
-                rgba(255, 255, 255, 0.03) 4px
-            );
-            pointer-events: none;
+            background: rgba(255, 107, 107, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
             z-index: 1000;
+            animation: alarmFlash 0.5s infinite;
         }
-        
-        .game-status {
-            text-align: center;
-            margin: 20px 0;
-            padding: 15px;
-            background: linear-gradient(135deg, rgba(119, 198, 255, 0.1), rgba(255, 119, 198, 0.1));
-            border: 2px solid #77c6ff;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(119, 198, 255, 0.3);
-            max-width: 350px;
-            margin-left: auto;
-            margin-right: auto;
+
+        .alarm-overlay.show {
+            display: flex;
         }
-        
-        .status-text {
-            color: #77c6ff;
-            font-size: 1.2rem;
+
+        @keyframes alarmFlash {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+        }
+
+        .alarm-text {
+            font-size: 2rem;
             font-weight: bold;
-            text-shadow: 0 0 5px currentColor;
+            color: white;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
-        
-        /* Optimización para móviles */
-        @media (max-width: 768px) {
-            .title {
-                font-size: 2.2rem;
-                letter-spacing: 3px;
-                margin: 10px 0;
-            }
-            
-            .alphabet-circle {
-                width: 320px;
-                height: 320px;
-            }
-            
-            .letter {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-            
-            .center-button {
-                width: 120px;
-                height: 120px;
-                font-size: 14px;
-            }
-            
-            .timer-display {
-                font-size: 2.5rem;
-            }
-            
-            .btn {
-                padding: 10px 20px;
-                font-size: 14px;
-            }
-        }
-        
+
         @media (max-width: 480px) {
-            .alphabet-circle {
-                width: 280px;
-                height: 280px;
+            .game-container {
+                padding: 5px;
             }
             
             .letter {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
             }
             
-            .center-button {
-                width: 100px;
-                height: 100px;
-                font-size: 12px;
-            }
-            
-            .title {
-                font-size: 1.8rem;
-                letter-spacing: 2px;
+            .start-button {
+                width: 80px;
+                height: 80px;
+                font-size: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="neon-bg"></div>
-    <div class="scanlines"></div>
-    
     <div class="game-container">
-        <h1 class="title">VHS - BASTA</h1>
-        
-        <div class="controls">
-            <button class="btn" onclick="newGame()">Nuevo Juego</button>
+        <div class="title">
+            <h1>VHS-BASTA</h1>
         </div>
-        
-        <div class="game-info">
-            <div class="card" id="categoryCard">
-                <h3>Categoría</h3>
-                <p id="currentCategory">Presiona "Nuevo Juego" para comenzar</p>
+
+        <div class="game-board">
+            <div class="card-container" id="categoryCard">
+                <div class="card-title">CATEGORÍA</div>
+                <div class="card-category" id="categoryText">Toca para comenzar</div>
             </div>
-            
-            <div class="timer-display" id="timerDisplay">10</div>
+
+            <div class="center-controls">
+                <div class="timer-display" id="timerDisplay">0</div>
+                <button class="start-button" id="startButton">INICIAR</button>
+            </div>
+
+            <div class="letter-circle" id="letterCircle"></div>
+
+            <div class="controls">
+                <button class="control-btn" id="newGameBtn">NUEVO JUEGO</button>
+                <button class="control-btn" id="rulesBtn">REGLAS</button>
+            </div>
         </div>
-        
-        <div class="alphabet-circle" id="alphabetCircle">
-            <button class="center-button" id="centerButton" onclick="handleCenterButton()">
-                Iniciar<br>Turno
-            </button>
-        </div>
-        
-        <div class="game-status">
-            <div class="status-text" id="gameStatus">Toca una letra, luego el botón central</div>
-        </div>
-        
-        <div class="rules">
-            <h3>Reglas Rápidas</h3>
-            <ul>
-                <li>Di una palabra de la categoría</li>
-                <li>Toca la letra inicial en el círculo</li>
-                <li>Toca el botón central antes de 10 seg</li>
-                <li>¡No repitas letras usadas!</li>
-                <li>Si no respondes a tiempo, pierdes</li>
-            </ul>
+
+        <div class="rules" id="rulesPanel" style="display: none;">
+            <h3>¿Cómo jugar VHS-BASTA?</h3>
+            <p><strong>1.</strong> Toca la carta para cambiar la categoría</p>
+            <p><strong>2.</strong> Pulsa INICIAR para comenzar el temporizador</p>
+            <p><strong>3.</strong> Di una palabra de la categoría y toca su letra inicial</p>
+            <p><strong>4.</strong> Vuelve a pulsar INICIAR para pasar el turno</p>
+            <p><strong>5.</strong> Si se acaba el tiempo, suena la alarma</p>
+            <p><strong>6.</strong> Las letras usadas se marcan en rojo</p>
         </div>
     </div>
 
+    <div class="alarm-overlay" id="alarmOverlay">
+        <div class="alarm-text">¡TIEMPO AGOTADO!</div>
+    </div>
+
     <script>
-        // Variables del juego
-        let usedLetters = new Set();
-        let isTimerActive = false;
-        let timerInterval;
-        let timeLeft = 10;
-        let gameActive = false;
-        let letterSelected = false;
-        
-        // Categorías del juego
-        const categories = [
-            "Animal", "Parte del cuerpo", "Color", "Comida", "País", "Ciudad",
-            "Nombre de persona", "Objeto de la casa", "Profesión", "Deporte",
-            "Fruta", "Verdura", "Marca", "Película", "Canción", "Instrumento musical",
-            "Medio de transporte", "Ropa", "Juguete", "Superhéroe", "Algo que vuela",
-            "Algo que nada", "Cosa que huele mal", "Cosa que huele bien", "Algo frío",
-            "Algo caliente", "Algo redondo", "Algo cuadrado", "Algo suave", "Algo duro"
-        ];
-        
-        // Letras del alfabeto
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-        
-        // Sonidos (Web Audio API)
-        let audioContext;
-        
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        class VHSBastaGame {
+            constructor() {
+                this.categories = [
+                    "Parte del cuerpo", "Un animal", "Un vegetal", "Una fruta", "Un color",
+                    "Un país", "Una ciudad", "Un nombre de persona", "Un objeto del hogar",
+                    "Una profesión", "Un deporte", "Un instrumento musical", "Una comida",
+                    "Una bebida", "Un medio de transporte", "Una película", "Un libro",
+                    "Una marca", "Una prenda de vestir", "Un sentimiento", "Un lugar",
+                    "Un juguete", "Un electrodoméstico", "Un animal marino", "Un insecto",
+                    "Una herramienta", "Un mueble", "Una flor", "Un árbol", "Un metal",
+                    "Un juego", "Una canción", "Un baile", "Una festividad", "Un idioma"
+                ];
+                
+                this.usedLetters = new Set();
+                this.timer = null;
+                this.currentTime = 0;
+                this.isRunning = false;
+                
+                this.initializeGame();
+                this.setupEventListeners();
+                this.createLetterCircle();
             }
-        }
-        
-        function playSound(frequency, duration, type = 'sine') {
-            initAudio();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = frequency;
-            oscillator.type = type;
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + duration);
-        }
-        
-        function playAlarm() {
-            // Sonido de alarma más intenso
-            for (let i = 0; i < 5; i++) {
+
+            initializeGame() {
+                this.categoryCard = document.getElementById('categoryCard');
+                this.categoryText = document.getElementById('categoryText');
+                this.startButton = document.getElementById('startButton');
+                this.timerDisplay = document.getElementById('timerDisplay');
+                this.letterCircle = document.getElementById('letterCircle');
+                this.newGameBtn = document.getElementById('newGameBtn');
+                this.rulesBtn = document.getElementById('rulesBtn');
+                this.rulesPanel = document.getElementById('rulesPanel');
+                this.alarmOverlay = document.getElementById('alarmOverlay');
+                
+                this.setRandomCategory();
+            }
+
+            setupEventListeners() {
+                this.categoryCard.addEventListener('click', () => this.setRandomCategory());
+                this.startButton.addEventListener('click', () => this.handleStartButton());
+                this.newGameBtn.addEventListener('click', () => this.newGame());
+                this.rulesBtn.addEventListener('click', () => this.toggleRules());
+                
+                // Ocultar alarma al tocar
+                this.alarmOverlay.addEventListener('click', () => this.hideAlarm());
+            }
+
+            setRandomCategory() {
+                const randomIndex = Math.floor(Math.random() * this.categories.length);
+                this.categoryText.textContent = this.categories[randomIndex];
+                
+                // Animación de cambio
+                this.categoryCard.style.transform = 'scale(0.95)';
                 setTimeout(() => {
-                    playSound(800, 0.3, 'square');
-                    setTimeout(() => playSound(400, 0.3, 'square'), 150);
-                }, i * 300);
+                    this.categoryCard.style.transform = 'scale(1)';
+                }, 150);
             }
-        }
-        
-        function playTick() {
-            playSound(1000, 0.1, 'square');
-        }
-        
-        function playSuccess() {
-            playSound(523, 0.3); // Do
-            setTimeout(() => playSound(659, 0.3), 150); // Mi
-            setTimeout(() => playSound(784, 0.5), 300); // Sol
-        }
-        
-        function playCorrect() {
-            playSound(800, 0.2);
-            setTimeout(() => playSound(1000, 0.3), 100);
-        }
-        
-        // Inicializar el círculo de letras
-        function initAlphabetCircle() {
-            const circle = document.getElementById('alphabetCircle');
-            const centerX = 175;
-            const centerY = 175;
-            const radius = 140;
-            
-            // Limpiar letras existentes (excepto el botón central)
-            const existingLetters = circle.querySelectorAll('.letter');
-            existingLetters.forEach(letter => letter.remove());
-            
-            letters.forEach((letter, index) => {
-                const angle = (index / letters.length) * 2 * Math.PI - Math.PI / 2;
-                const x = centerX + radius * Math.cos(angle) - 22.5;
-                const y = centerY + radius * Math.sin(angle) - 22.5;
+
+            createLetterCircle() {
+                const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const centerX = 150;
+                const centerY = 150;
+                const radius = 120;
                 
-                const letterElement = document.createElement('div');
-                letterElement.className = 'letter';
-                letterElement.textContent = letter;
-                letterElement.style.left = x + 'px';
-                letterElement.style.top = y + 'px';
-                letterElement.onclick = () => selectLetter(letter);
-                
-                circle.appendChild(letterElement);
-            });
-        }
-        
-        // Seleccionar letra
-        function selectLetter(letter) {
-            if (usedLetters.has(letter) || !gameActive || isTimerActive) {
-                return;
-            }
-            
-            letterSelected = true;
-            usedLetters.add(letter);
-            const letterElements = document.querySelectorAll('.letter');
-            letterElements.forEach(el => {
-                if (el.textContent === letter) {
-                    el.classList.add('used');
-                }
-            });
-            
-            document.getElementById('gameStatus').textContent = 'Ahora toca el botón central para continuar';
-            playCorrect();
-        }
-        
-        // Manejar botón central
-        function handleCenterButton() {
-            if (!gameActive) {
-                return;
-            }
-            
-            initAudio();
-            
-            if (!isTimerActive) {
-                // Iniciar temporizador
-                if (!letterSelected) {
-                    document.getElementById('gameStatus').textContent = 'Debes tocar una letra primero';
-                    playSound(300, 0.5, 'square');
-                    return;
-                }
-                
-                startTimer();
-            } else {
-                // El jugador respondió a tiempo - pasar al siguiente turno
-                clearInterval(timerInterval);
-                isTimerActive = false;
-                letterSelected = false;
-                
-                const centerButton = document.getElementById('centerButton');
-                centerButton.classList.remove('active');
-                centerButton.textContent = 'Iniciar\nTurno';
-                
-                document.getElementById('timerDisplay').textContent = '10';
-                document.getElementById('gameStatus').textContent = 'Siguiente jugador: Toca una letra, luego el botón central';
-                
-                playSuccess();
-                timeLeft = 10;
-            }
-        }
-        
-        // Iniciar temporizador
-        function startTimer() {
-            isTimerActive = true;
-            timeLeft = 10;
-            
-            const centerButton = document.getElementById('centerButton');
-            const timerDisplay = document.getElementById('timerDisplay');
-            
-            centerButton.classList.add('active');
-            centerButton.textContent = 'Respondí!\nTócame';
-            
-            document.getElementById('gameStatus').textContent = 'Tiempo corriendo... Toca el botón si respondiste';
-            
-            playTick();
-            
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = timeLeft;
-                
-                if (timeLeft > 0) {
-                    playTick();
-                }
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    isTimerActive = false;
-                    letterSelected = false;
+                letters.split('').forEach((letter, index) => {
+                    const angle = (index * 360 / 26) * (Math.PI / 180);
+                    const x = centerX + radius * Math.cos(angle) - 17.5;
+                    const y = centerY + radius * Math.sin(angle) - 17.5;
                     
-                    centerButton.classList.remove('active');
-                    centerButton.textContent = 'Iniciar\nTurno';
+                    const letterBtn = document.createElement('button');
+                    letterBtn.className = 'letter';
+                    letterBtn.textContent = letter;
+                    letterBtn.style.left = `${x}px`;
+                    letterBtn.style.top = `${y}px`;
                     
-                    document.getElementById('gameStatus').textContent = '¡Tiempo agotado! Toca "Nuevo Juego" para reiniciar';
+                    letterBtn.addEventListener('click', () => this.selectLetter(letter, letterBtn));
                     
-                    playAlarm();
-                    gameActive = false;
-                }
-            }, 1000);
-        }
-        
-        // Nuevo juego
-        function newGame() {
-            gameActive = true;
-            usedLetters.clear();
-            timeLeft = 10;
-            letterSelected = false;
-            
-            if (isTimerActive) {
-                clearInterval(timerInterval);
-                isTimerActive = false;
+                    this.letterCircle.appendChild(letterBtn);
+                });
             }
-            
-            // Resetear interfaz
-            document.getElementById('timerDisplay').textContent = '10';
-            document.getElementById('centerButton').classList.remove('active');
-            document.getElementById('centerButton').textContent = 'Iniciar\nTurno';
-            document.getElementById('gameStatus').textContent = 'Toca una letra, luego el botón central';
-            
-            // Nueva categoría aleatoria
-            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-            document.getElementById('currentCategory').textContent = randomCategory;
-            
-            // Resetear letras
-            initAlphabetCircle();
-            
-            playSuccess();
+
+            selectLetter(letter, button) {
+                if (this.usedLetters.has(letter)) return;
+                
+                this.usedLetters.add(letter);
+                button.classList.add('used');
+                
+                // Sonido de selección (simulado con vibración en móviles)
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+                
+                // Animación de selección
+                button.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    button.style.transform = 'scale(1)';
+                }, 200);
+            }
+
+            handleStartButton() {
+                if (this.isRunning) {
+                    this.stopTimer();
+                    this.startButton.textContent = 'INICIAR';
+                    this.timerDisplay.textContent = '0';
+                    this.timerDisplay.classList.remove('warning');
+                } else {
+                    this.startTimer();
+                    this.startButton.textContent = 'PARAR';
+                }
+            }
+
+            startTimer() {
+                this.currentTime = 10;
+                this.isRunning = true;
+                this.updateTimerDisplay();
+                
+                this.timer = setInterval(() => {
+                    this.currentTime--;
+                    this.updateTimerDisplay();
+                    
+                    if (this.currentTime <= 3 && this.currentTime > 0) {
+                        this.timerDisplay.classList.add('warning');
+                    }
+                    
+                    if (this.currentTime <= 0) {
+                        this.timeUp();
+                    }
+                }, 1000);
+            }
+
+            stopTimer() {
+                if (this.timer) {
+                    clearInterval(this.timer);
+                    this.timer = null;
+                }
+                this.isRunning = false;
+                this.timerDisplay.classList.remove('warning');
+            }
+
+            updateTimerDisplay() {
+                this.timerDisplay.textContent = this.currentTime;
+            }
+
+            timeUp() {
+                this.stopTimer();
+                this.showAlarm();
+                this.startButton.textContent = 'INICIAR';
+                this.timerDisplay.textContent = '0';
+                
+                // Vibración fuerte para la alarma
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200, 100, 200]);
+                }
+            }
+
+            showAlarm() {
+                this.alarmOverlay.classList.add('show');
+                
+                // Auto-ocultar después de 2 segundos
+                setTimeout(() => {
+                    this.hideAlarm();
+                }, 2000);
+            }
+
+            hideAlarm() {
+                this.alarmOverlay.classList.remove('show');
+            }
+
+            newGame() {
+                this.stopTimer();
+                this.usedLetters.clear();
+                this.currentTime = 0;
+                this.timerDisplay.textContent = '0';
+                this.timerDisplay.classList.remove('warning');
+                this.startButton.textContent = 'INICIAR';
+                this.setRandomCategory();
+                
+                // Restaurar todas las letras
+                const letters = document.querySelectorAll('.letter');
+                letters.forEach(letter => {
+                    letter.classList.remove('used');
+                });
+                
+                // Animación de reinicio
+                this.letterCircle.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    this.letterCircle.style.transform = 'scale(1)';
+                }, 300);
+            }
+
+            toggleRules() {
+                const isVisible = this.rulesPanel.style.display !== 'none';
+                this.rulesPanel.style.display = isVisible ? 'none' : 'block';
+                this.rulesBtn.textContent = isVisible ? 'REGLAS' : 'OCULTAR';
+            }
         }
-        
-        // Inicializar juego
-        document.addEventListener('DOMContentLoaded', function() {
-            initAlphabetCircle();
-            // Mostrar categoría inicial
-            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-            document.getElementById('currentCategory').textContent = randomCategory;
+
+        // Inicializar el juego cuando se carga la página
+        document.addEventListener('DOMContentLoaded', () => {
+            new VHSBastaGame();
         });
-        
-        // Prevenir zoom en dispositivos móviles
-        document.addEventListener('touchstart', function(event) {
-            if (event.touches.length > 1) {
-                event.preventDefault();
-            }
-        }, { passive: false });
-        
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function(event) {
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
+
+        // Prevenir zoom en iOS
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
     </script>
 </body>
 </html>
