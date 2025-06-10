@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VHS-BASTA</title>
+    <audio id="myAudio" src="tiempo.mp3" preload="auto"></audio>
     <style>
         * {
             margin: 0;
@@ -483,16 +484,24 @@
             }
 
             handleStartButton() {
-                if (this.isRunning) {
-                    this.stopTimer();
-                    this.startButton.textContent = 'INICIAR';
-                    this.timerDisplay.textContent = '0';
-                    this.timerDisplay.classList.remove('warning');
-                } else {
-                    this.startTimer();
-                    this.startButton.textContent = 'PARAR';
-                }
-            }
+    const audio = document.getElementById('myAudio');
+
+    if (this.isRunning) {
+        this.stopTimer();
+        this.startButton.textContent = 'INICIAR';
+        this.timerDisplay.textContent = '0';
+        this.timerDisplay.classList.remove('warning');
+
+        audio.pause();
+        audio.currentTime = 0; // reinicia el audio
+    } else {
+        this.startTimer();
+        this.startButton.textContent = 'PARAR';
+
+        audio.play();
+    }
+}
+
 
             startTimer() {
                 this.currentTime = 10;
