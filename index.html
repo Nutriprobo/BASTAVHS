@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VHS-BASTA</title>
+    <title>VHS-BASTA-NOLC</title>
     <audio id="myAudio" src="tiempo.mp3" preload="auto"></audio>
     <style>
         * {
@@ -347,7 +347,7 @@
 
         <div class="game-board">
             <div class="card-container" id="categoryCard">
-                <div class="card-title">CATEGORÍA</div>
+                <div class="card-title">CARTAS</div>
                 <div class="card-category" id="categoryText">Toca para comenzar</div>
             </div>
 
@@ -386,16 +386,47 @@
     <script>
         class VHSBastaGame {
             constructor() {
-                this.categories = [
-                    "Parte del cuerpo", "Un animal", "Un vegetal", "Una fruta", "Un color",
-                    "Un país", "Una ciudad", "Un nombre de persona", "Un objeto del hogar",
-                    "Una profesión", "Un deporte", "Un instrumento musical", "Una comida",
-                    "Una bebida", "Un medio de transporte", "Una película", "Un libro",
-                    "Una marca", "Una prenda de vestir", "Un sentimiento", "Un lugar",
-                    "Un juguete", "Un electrodoméstico", "Un animal marino", "Un insecto",
-                    "Una herramienta", "Un mueble", "Una flor", "Un árbol", "Un metal",
-                    "Un juego", "Una canción", "Un baile", "Una festividad", "Un idioma"
-                ];
+               this.categories = [
+    // 5 categorías específicas para Bolivia
+    "Un plato típico boliviano",
+    "Un lugar turístico de Bolivia",
+    "Un personaje histórico de Bolivia",
+    "Una festividad boliviana",
+    "Un animal de la fauna boliviana",
+
+    // Categorías generales existentes
+    "Parte del cuerpo", "Un animal", "Un vegetal", "Una fruta", "Un color",
+    "Un país", "Una ciudad", "Un nombre de persona", "Un objeto del hogar",
+    "Una profesión", "Un deporte", "Un instrumento musical", "Una comida",
+    "Una bebida", "Un medio de transporte", "Una película", "Un libro",
+    "Una marca", "Una prenda de vestir", "Un sentimiento", "Un lugar",
+    "Un juguete", "Un electrodoméstico", "Un animal marino", "Un insecto",
+    "Una herramienta", "Un mueble", "Una flor", "Un árbol", "Un metal",
+    "Un juego", "Una canción", "Un baile", "Una festividad", "Un idioma",
+
+    // 20 categorías generales nuevas
+    "Un personaje de caricatura",
+    "Una fruta exótica",
+    "Un planeta del sistema solar",
+    "Un monumento famoso",
+    "Un invento importante",
+    "Un postre",
+    "Una bebida alcohólica",
+    "Una red social",
+    "Un videojuego",
+    "Un programa de televisión",
+    "Una marca de ropa",
+    "Un deporte extremo",
+    "Un símbolo nacional",
+    "Una profesión artística",
+    "Un tipo de clima",
+    "Un objeto tecnológico",
+    "Una parte del auto",
+    "Un género musical",
+    "Una marca de autos",
+    "Una planta medicinal"
+];
+
                 
                 this.usedLetters = new Set();
                 this.timer = null;
