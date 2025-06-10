@@ -147,7 +147,6 @@
             transition: all 0.3s ease;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-           
         }
 
         .start-button:hover {
@@ -253,27 +252,25 @@
             color: #3b82f6;
             margin-bottom: 10px;
         }
-/*IMANGEN DEBAJO DEL TITULO*/
+
         .title {
-    position: relative; /* Necesario para que los pseudo-elementos se posicionen correctamente */
-    text-align: center;
-    padding: 30px;
-    color: white;
-    font-size: 2em;
-    z-index: 1; /* Coloca el texto por encima */
-}
+            position: relative;
+            text-align: center;
+            padding: 30px;
+            color: white;
+            font-size: 2em;
+            z-index: 1;
+        }
 
-.title::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: url("vhs.jpg") center/cover no-repeat;
-    opacity: 0.3; /* Ajusta la opacidad para que quede "opaca" */
-    z-index: -1; /* Para que la imagen quede detrás del texto */
-    border-radius: 15px;
-}
-        
-
+        .title::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("vhs.jpg") center/cover no-repeat;
+            opacity: 0.3;
+            z-index: -1;
+            border-radius: 15px;
+        }
 
         .alarm-overlay {
             position: fixed;
@@ -297,20 +294,21 @@
             0%, 100% { opacity: 0.8; }
             50% { opacity: 0.4; }
         }
-    .circle-wrapper {
-  position: relative;
-  width: min(300px, 80vw);
-  height: min(300px, 80vw);
-  margin: 20px auto;
-}
 
-.circle-wrapper .start-button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0; /* quita el margin-top del botón */
-}
+        .circle-wrapper {
+            position: relative;
+            width: min(300px, 80vw);
+            height: min(300px, 80vw);
+            margin: 20px auto;
+        }
+
+        .circle-wrapper .start-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+        }
 
         .alarm-text {
             font-size: 2rem;
@@ -342,7 +340,7 @@
 <body>
     <div class="game-container">
         <div class="title">
-            <h1>VHS-BASTA</h1>
+            <h1>VHS-BASTA-NOLC</h1>
         </div>
 
         <div class="game-board">
@@ -353,14 +351,12 @@
 
             <div class="center-controls">
                 <div class="timer-display" id="timerDisplay">0</div>
-                
             </div>
-<div class="circle-wrapper">
-  <div class="letter-circle" id="letterCircle"></div>
-  <button class="start-button" id="startButton">INICIAR</button>
-</div>
 
-           
+            <div class="circle-wrapper">
+                <div class="letter-circle" id="letterCircle"></div>
+                <button class="start-button" id="startButton">INICIAR</button>
+            </div>
 
             <div class="controls">
                 <button class="control-btn" id="newGameBtn">NUEVO JUEGO</button>
@@ -373,8 +369,8 @@
             <p><strong>1.</strong> Toca la carta para cambiar la categoría</p>
             <p><strong>2.</strong> Pulsa INICIAR para comenzar el temporizador</p>
             <p><strong>3.</strong> Di una palabra de la categoría y toca su letra inicial</p>
-            <p><strong>4.</strong> Vuelve a pulsar INICIAR para pasar el turno</p>
-            <p><strong>5.</strong> Si se acaba el tiempo, suena la alarma</p>
+            <p><strong>4.</strong> Vuelve a pulsar INICIAR para reiniciar el contador</p>
+            <p><strong>5.</strong> Si se acaba el tiempo sin tocar, suena la alarma</p>
             <p><strong>6.</strong> Las letras usadas se marcan en rojo</p>
         </div>
     </div>
@@ -386,47 +382,46 @@
     <script>
         class VHSBastaGame {
             constructor() {
-               this.categories = [
-    // 5 categorías específicas para Bolivia
-    "Un plato típico boliviano",
-    "Un lugar turístico de Bolivia",
-    "Un personaje histórico de Bolivia",
-    "Una festividad boliviana",
-    "Un animal de la fauna boliviana",
+                this.categories = [
+                    // 5 categorías específicas para Bolivia
+                    "Un plato típico boliviano",
+                    "Un lugar turístico de Bolivia",
+                    "Un personaje histórico de Bolivia",
+                    "Una festividad boliviana",
+                    "Un animal de la fauna boliviana",
 
-    // Categorías generales existentes
-    "Parte del cuerpo", "Un animal", "Un vegetal", "Una fruta", "Un color",
-    "Un país", "Una ciudad", "Un nombre de persona", "Un objeto del hogar",
-    "Una profesión", "Un deporte", "Un instrumento musical", "Una comida",
-    "Una bebida", "Un medio de transporte", "Una película", "Un libro",
-    "Una marca", "Una prenda de vestir", "Un sentimiento", "Un lugar",
-    "Un juguete", "Un electrodoméstico", "Un animal marino", "Un insecto",
-    "Una herramienta", "Un mueble", "Una flor", "Un árbol", "Un metal",
-    "Un juego", "Una canción", "Un baile", "Una festividad", "Un idioma",
+                    // Categorías generales existentes
+                    "Parte del cuerpo", "Un animal", "Un vegetal", "Una fruta", "Un color",
+                    "Un país", "Una ciudad", "Un nombre de persona", "Un objeto del hogar",
+                    "Una profesión", "Un deporte", "Un instrumento musical", "Una comida",
+                    "Una bebida", "Un medio de transporte", "Una película", "Un libro",
+                    "Una marca", "Una prenda de vestir", "Un sentimiento", "Un lugar",
+                    "Un juguete", "Un electrodoméstico", "Un animal marino", "Un insecto",
+                    "Una herramienta", "Un mueble", "Una flor", "Un árbol", "Un metal",
+                    "Un juego", "Una canción", "Un baile", "Una festividad", "Un idioma",
 
-    // 20 categorías generales nuevas
-    "Un personaje de caricatura",
-    "Una fruta exótica",
-    "Un planeta del sistema solar",
-    "Un monumento famoso",
-    "Un invento importante",
-    "Un postre",
-    "Una bebida alcohólica",
-    "Una red social",
-    "Un videojuego",
-    "Un programa de televisión",
-    "Una marca de ropa",
-    "Un deporte extremo",
-    "Un símbolo nacional",
-    "Una profesión artística",
-    "Un tipo de clima",
-    "Un objeto tecnológico",
-    "Una parte del auto",
-    "Un género musical",
-    "Una marca de autos",
-    "Una planta medicinal"
-];
-
+                    // 20 categorías generales nuevas
+                    "Un personaje de caricatura",
+                    "Una fruta exótica",
+                    "Un planeta del sistema solar",
+                    "Un monumento famoso",
+                    "Un invento importante",
+                    "Un postre",
+                    "Una bebida alcohólica",
+                    "Una red social",
+                    "Un videojuego",
+                    "Un programa de televisión",
+                    "Una marca de ropa",
+                    "Un deporte extremo",
+                    "Un símbolo nacional",
+                    "Una profesión artística",
+                    "Un tipo de clima",
+                    "Un objeto tecnológico",
+                    "Una parte del auto",
+                    "Un género musical",
+                    "Una marca de autos",
+                    "Una planta medicinal"
+                ];
                 
                 this.usedLetters = new Set();
                 this.timer = null;
@@ -515,28 +510,24 @@
             }
 
             handleStartButton() {
-    const audio = document.getElementById('myAudio');
-
-    if (this.isRunning) {
-        this.stopTimer();
-        this.startButton.textContent = 'INICIAR';
-        this.timerDisplay.textContent = '0';
-        this.timerDisplay.classList.remove('warning');
-
-        audio.pause();
-        audio.currentTime = 0; // reinicia el audio
-    } else {
-        this.startTimer();
-        this.startButton.textContent = 'PARAR';
-
-        audio.play();
-    }
-}
-
+                const audio = document.getElementById('myAudio');
+                
+                // Siempre reinicia el timer a 10 segundos cuando se toca
+                this.stopTimer(); // Para el timer actual si está corriendo
+                
+                // Reinicia el audio
+                audio.pause();
+                audio.currentTime = 0;
+                
+                // Inicia nuevo contador
+                this.startTimer();
+                audio.play();
+            }
 
             startTimer() {
                 this.currentTime = 10;
                 this.isRunning = true;
+                this.timerDisplay.classList.remove('warning');
                 this.updateTimerDisplay();
                 
                 this.timer = setInterval(() => {
@@ -569,8 +560,12 @@
             timeUp() {
                 this.stopTimer();
                 this.showAlarm();
-                this.startButton.textContent = 'INICIAR';
                 this.timerDisplay.textContent = '0';
+                
+                // Para el audio también
+                const audio = document.getElementById('myAudio');
+                audio.pause();
+                audio.currentTime = 0;
                 
                 // Vibración fuerte para la alarma
                 if (navigator.vibrate) {
@@ -597,8 +592,12 @@
                 this.currentTime = 0;
                 this.timerDisplay.textContent = '0';
                 this.timerDisplay.classList.remove('warning');
-                this.startButton.textContent = 'INICIAR';
                 this.setRandomCategory();
+                
+                // Para el audio
+                const audio = document.getElementById('myAudio');
+                audio.pause();
+                audio.currentTime = 0;
                 
                 // Restaurar todas las letras
                 const letters = document.querySelectorAll('.letter');
