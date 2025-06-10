@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VHS - BASTA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #1a0033, #0a0a2e, #16213e);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .neon-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(119, 198, 255, 0.3) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .title {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            color: #ff77c6;
+            text-shadow: 
+                0 0 5px #ff77c6,
+                0 0 10px #ff77c6,
+                0 0 15px #ff77c6,
+                0 0 20px #ff77c6,
+                0 0 40px #ff77c6;
+            animation: neonPulse 2s ease-in-out infinite alternate;
+            position: relative;
+        }
+        
+        .title::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #ff77c6, #77c6ff, #c677ff);
+            border-radius: 10px;
+            z-index: -1;
+            filter: blur(15px);
+            opacity: 0.7;
+            animation: colorShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes neonPulse {
+            from { text-shadow: 0 0 5px #ff77c6, 0 0 10px #ff77c6, 0 0 15px #ff77c6; }
+            to { text-shadow: 0 0 10px #ff77c6, 0 0 20px #ff77c6, 0 0 30px #ff77c6, 0 0 40px #ff77c6; }
+        }
+        
+        @keyframes colorShift {
+            0% { filter: hue-rotate(0deg) blur(15px); }
+            50% { filter: hue-rotate(180deg) blur(20px); }
+            100% { filter: hue-rotate(360deg) blur(15px); }
+        }
+        
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .game-board {
+            display: grid;
+            grid-template-columns: 1fr 400px 1fr;
+            gap: 30px;
+            align-items: start;
+            margin-bottom: 30px;
+        }
+        
+        .game-info {
+            background: linear-gradient(135deg, rgba(119, 198, 255, 0.1), rgba(255, 119, 198, 0.1));
+            border: 2px solid #77c6ff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(119, 198, 255, 0.3);
+        }
+        
+        .alphabet-circle {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            background: radial-gradient(circle, rgba(255, 119, 198, 0.1), rgba(119, 198, 255, 0.1));
+            border: 3px solid #c677ff;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 30px rgba(198, 119, 255, 0.5),
+                inset 0 0 30px rgba(255, 119, 198, 0.2);
+        }
+        
+        .letter {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #77c6ff;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a0033, #0a0a2e);
+            color: #77c6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            text-shadow: 0 0 5px currentColor;
+        }
+        
+        .letter:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px currentColor;
+            border-color: #ff77c6;
+            color: #ff77c6;
+        }
+        
+        .letter.used {
+            background: linear-gradient(135deg, #333, #666);
+            color: #666;
+            border-color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+            text-shadow: none;
+        }
+        
+        .center-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border: 4px solid #ff77c6;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a0033, #16213e);
+            color: #ff77c6;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(255, 119, 198, 0.5);
+            text-shadow: 0 0 5px currentColor;
+        }
+        
+        .center-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 119, 198, 0.8);
+        }
+        
+        .center-button.active {
+            animation: timerPulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes timerPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #1a0033, #16213e);
+            border: 3px solid #c677ff;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(198, 119, 255, 0.3);
+        }
+        
+        .card h3 {
+            color: #c677ff;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px currentColor;
+        }
+        
+        .card p {
+            color: #77c6ff;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .players-info {
+            background: linear-gradient(135deg, rgba(198, 119, 255, 0.1), rgba(119, 198, 255, 0.1));
+            border: 2px solid #c677ff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(198, 119, 255, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: 2px solid;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #1a0033, #16213e);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 5px currentColor;
+        }
+        
+        .btn-primary {
+            border-color: #ff77c6;
+            color: #ff77c6;
+            box-shadow: 0 0 15px rgba(255, 119, 198, 0.3);
+        }
+        
+        .btn-secondary {
+            border-color: #77c6ff;
+            color: #77c6ff;
+            box-shadow: 0 0 15px rgba(119, 198, 255, 0.3);
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px currentColor;
+        }
+        
+        .rules {
+            background: linear-gradient(135deg, rgba(255, 119, 198, 0.1), rgba(198, 119, 255, 0.1));
+            border: 2px solid #ff77c6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(255, 119, 198, 0.3);
+        }
+        
+        .rules h3 {
+            color: #ff77c6;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 0 0 5px currentColor;
+        }
+        
+        .rules ul {
+            color: #77c6ff;
+            line-height: 1.6;
+        }
+        
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+            color: #ff77c6;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .current-player {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 10px 0;
+            color: #c677ff;
+            text-shadow: 0 0 5px currentColor;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 255, 255, 0.03) 2px,
+                rgba(255, 255, 255, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a0033, #16213e);
+            border: 3px solid #ff77c6;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 119, 198, 0.5);
+        }
+        
+        .modal h2 {
+            color: #ff77c6;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        input[type="number"] {
+            background: linear-gradient(135deg, #1a0033, #16213e);
+            border: 2px solid #77c6ff;
+            border-radius: 10px;
+            padding: 10px;
+            color: #77c6ff;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+                letter-spacing: 4px;
+            }
+            
+            .game-board {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .alphabet-circle {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .letter {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+            
+            .center-button {
+                width: 80px;
+                height: 80px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neon-bg"></div>
+    <div class="scanlines"></div>
+    
+    <div class="game-container">
+        <h1 class="title">VHS - BASTA</h1>
+        
+        <div class="controls">
+            <button class="btn btn-primary" onclick="newGame()">Nuevo Juego</button>
+            <button class="btn btn-secondary" onclick="showPlayerModal()">Configurar Jugadores</button>
+        </div>
+        
+        <div class="game-board">
+            <div class="game-info">
+                <div class="card" id="categoryCard">
+                    <h3>Categoría</h3>
+                    <p id="currentCategory">Presiona "Nuevo Juego" para comenzar</p>
+                </div>
+                
+                <div class="current-player">
+                    Jugador <span id="currentPlayerNumber">1</span>
+                </div>
+                
+                <div class="timer-display" id="timerDisplay">10</div>
+            </div>
+            
+            <div class="alphabet-circle" id="alphabetCircle">
+                <button class="center-button" id="centerButton" onclick="startTimer()">
+                    Iniciar<br>Turno
+                </button>
+            </div>
+            
+            <div class="players-info">
+                <div class="card">
+                    <h3>Jugadores</h3>
+                    <p>Total: <span id="totalPlayers">2</span></p>
+                    <p>Jugadores restantes: <span id="remainingPlayers">2</span></p>
+                </div>
+                
+                <div class="rules">
+                    <h3>Reglas Rápidas</h3>
+                    <ul>
+                        <li>Di una palabra de la categoría</li>
+                        <li>Debe empezar con una letra no usada</li>
+                        <li>Marca la letra en el círculo</li>
+                        <li>Presiona el botón central</li>
+                        <li>Tienes 10 segundos</li>
+                        <li>¡No repitas letras!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para configurar jugadores -->
+    <div class="modal" id="playerModal">
+        <div class="modal-content">
+            <h2>Configurar Jugadores</h2>
+            <p>¿Cuántos jugadores van a jugar?</p>
+            <input type="number" id="playerCount" min="2" max="8" value="2">
+            <br><br>
+            <button class="btn btn-primary" onclick="setPlayers()">Confirmar</button>
+            <button class="btn btn-secondary" onclick="closePlayerModal()">Cancelar</button>
+        </div>
+    </div>
+    
+    <!-- Modal de fin de juego -->
+    <div class="modal" id="gameOverModal">
+        <div class="modal-content">
+            <h2>¡Juego Terminado!</h2>
+            <p id="gameOverMessage"></p>
+            <br>
+            <button class="btn btn-primary" onclick="newGame()">Nuevo Juego</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables del juego
+        let currentPlayer = 1;
+        let totalPlayers = 2;
+        let usedLetters = new Set();
+        let isTimerActive = false;
+        let timerInterval;
+        let timeLeft = 10;
+        let gameActive = false;
+        
+        // Categorías del juego
+        const categories = [
+            "Animal", "Parte del cuerpo", "Color", "Comida", "País", "Ciudad",
+            "Nombre de persona", "Objeto de la casa", "Profesión", "Deporte",
+            "Fruta", "Verdura", "Marca", "Película", "Canción", "Instrumento musical",
+            "Medio de transporte", "Ropa", "Juguete", "Superhéroe", "Algo que vuela",
+            "Algo que nada", "Cosa que huele mal", "Cosa que huele bien", "Algo frío",
+            "Algo caliente", "Algo redondo", "Algo cuadrado", "Algo suave", "Algo duro"
+        ];
+        
+        // Letras del alfabeto
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        
+        // Sonidos (Web Audio API)
+        let audioContext;
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playSound(frequency, duration, type = 'sine') {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+        
+        function playAlarm() {
+            // Sonido de alarma más intenso
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    playSound(800, 0.2, 'square');
+                    setTimeout(() => playSound(400, 0.2, 'square'), 100);
+                }, i * 200);
+            }
+        }
+        
+        function playTick() {
+            playSound(1000, 0.1, 'square');
+        }
+        
+        function playSuccess() {
+            playSound(523, 0.3); // Do
+            setTimeout(() => playSound(659, 0.3), 150); // Mi
+            setTimeout(() => playSound(784, 0.5), 300); // Sol
+        }
+        
+        // Inicializar el círculo de letras
+        function initAlphabetCircle() {
+            const circle = document.getElementById('alphabetCircle');
+            const centerX = 200;
+            const centerY = 200;
+            const radius = 160;
+            
+            // Limpiar letras existentes (excepto el botón central)
+            const existingLetters = circle.querySelectorAll('.letter');
+            existingLetters.forEach(letter => letter.remove());
+            
+            letters.forEach((letter, index) => {
+                const angle = (index / letters.length) * 2 * Math.PI - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle) - 20;
+                const y = centerY + radius * Math.sin(angle) - 20;
+                
+                const letterElement = document.createElement('div');
+                letterElement.className = 'letter';
+                letterElement.textContent = letter;
+                letterElement.style.left = x + 'px';
+                letterElement.style.top = y + 'px';
+                letterElement.onclick = () => selectLetter(letter);
+                
+                circle.appendChild(letterElement);
+            });
+        }
+        
+        // Seleccionar letra
+        function selectLetter(letter) {
+            if (usedLetters.has(letter) || !gameActive) {
+                return;
+            }
+            
+            usedLetters.add(letter);
+            const letterElements = document.querySelectorAll('.letter');
+            letterElements.forEach(el => {
+                if (el.textContent === letter) {
+                    el.classList.add('used');
+                    el.style.animation = 'fadeOut 0.5s ease';
+                }
+            });
+            
+            playSuccess();
+        }
+        
+        // Iniciar temporizador
+        function startTimer() {
+            if (!gameActive || isTimerActive) {
+                return;
+            }
+            
+            initAudio();
+            isTimerActive = true;
+            timeLeft = 10;
+            
+            const centerButton = document.getElementById('centerButton');
+            const timerDisplay = document.getElementById('timerDisplay');
+            
+            centerButton.classList.add('active');
+            centerButton.textContent = 'Contando...';
+            
+            playTick();
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                
+                if (timeLeft > 0) {
+                    playTick();
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    isTimerActive = false;
+                    centerButton.classList.remove('active');
+                    centerButton.textContent = 'Iniciar\nTurno';
+                    
+                    playAlarm();
+                    
+                    // El jugador actual pierde
+                    eliminatePlayer();
+                }
+            }, 1000);
+        }
+        
+        // Eliminar jugador
+        function eliminatePlayer() {
+            totalPlayers--;
+            document.getElementById('remainingPlayers').textContent = totalPlayers;
+            
+            if (totalPlayers <= 1) {
+                endGame();
+                return;
+            }
+            
+            // Pasar al siguiente jugador
+            nextPlayer();
+        }
+        
+        // Siguiente jugador
+        function nextPlayer() {
+            if (isTimerActive) {
+                clearInterval(timerInterval);
+                isTimerActive = false;
+                document.getElementById('centerButton').classList.remove('active');
+                document.getElementById('centerButton').textContent = 'Iniciar\nTurno';
+            }
+            
+            currentPlayer = (currentPlayer % totalPlayers) + 1;
+            document.getElementById('currentPlayerNumber').textContent = currentPlayer;
+            document.getElementById('timerDisplay').textContent = '10';
+            timeLeft = 10;
+        }
+        
+        // Terminar juego
+        function endGame() {
+            gameActive = false;
+            const winner = totalPlayers === 1 ? `Jugador ${currentPlayer}` : 'Empate';
+            document.getElementById('gameOverMessage').textContent = `¡${winner} ha ganado!`;
+            document.getElementById('gameOverModal').style.display = 'flex';
+            
+            // Sonido de victoria
+            setTimeout(() => {
+                playSound(523, 0.3); // Do
+                setTimeout(() => playSound(659, 0.3), 200); // Mi
+                setTimeout(() => playSound(784, 0.3), 400); // Sol
+                setTimeout(() => playSound(1047, 0.6), 600); // Do alto
+            }, 500);
+        }
+        
+        // Nuevo juego
+        function newGame() {
+            gameActive = true;
+            currentPlayer = 1;
+            usedLetters.clear();
+            timeLeft = 10;
+            
+            if (isTimerActive) {
+                clearInterval(timerInterval);
+                isTimerActive = false;
+            }
+            
+            // Resetear interfaz
+            document.getElementById('currentPlayerNumber').textContent = currentPlayer;
+            document.getElementById('timerDisplay').textContent = '10';
+            document.getElementById('remainingPlayers').textContent = totalPlayers;
+            document.getElementById('centerButton').classList.remove('active');
+            document.getElementById('centerButton').textContent = 'Iniciar\nTurno';
+            
+            // Nueva categoría aleatoria
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            document.getElementById('currentCategory').textContent = randomCategory;
+            
+            // Resetear letras
+            initAlphabetCircle();
+            
+            // Cerrar modales
+            document.getElementById('gameOverModal').style.display = 'none';
+            document.getElementById('playerModal').style.display = 'none';
+            
+            playSuccess();
+        }
+        
+        // Mostrar modal de jugadores
+        function showPlayerModal() {
+            document.getElementById('playerModal').style.display = 'flex';
+        }
+        
+        // Cerrar modal de jugadores
+        function closePlayerModal() {
+            document.getElementById('playerModal').style.display = 'none';
+        }
+        
+        // Configurar jugadores
+        function setPlayers() {
+            const count = parseInt(document.getElementById('playerCount').value);
+            if (count >= 2 && count <= 8) {
+                totalPlayers = count;
+                document.getElementById('totalPlayers').textContent = totalPlayers;
+                document.getElementById('remainingPlayers').textContent = totalPlayers;
+                closePlayerModal();
+                newGame();
+            }
+        }
+        
+        // Cerrar modales al hacer clic fuera
+        window.onclick = function(event) {
+            const playerModal = document.getElementById('playerModal');
+            const gameOverModal = document.getElementById('gameOverModal');
+            
+            if (event.target === playerModal) {
+                playerModal.style.display = 'none';
+            }
+            if (event.target === gameOverModal) {
+                gameOverModal.style.display = 'none';
+            }
+        }
+        
+        // Atajos de teclado
+        document.addEventListener('keydown', function(event) {
+            if (event.key === ' ' || event.key === 'Enter') {
+                event.preventDefault();
+                if (gameActive && !isTimerActive) {
+                    startTimer();
+                }
+            }
+            
+            if (event.key === 'Escape') {
+                if (isTimerActive) {
+                    nextPlayer();
+                }
+            }
+            
+            // Seleccionar letras con el teclado
+            const key = event.key.toUpperCase();
+            if (letters.includes(key) && gameActive) {
+                selectLetter(key);
+            }
+        });
+        
+        // Inicializar juego
+        document.addEventListener('DOMContentLoaded', function() {
+            initAlphabetCircle();
+            // Mostrar categoría inicial
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            document.getElementById('currentCategory').textContent = randomCategory;
+        });
+    </script>
+</body>
+</html>
